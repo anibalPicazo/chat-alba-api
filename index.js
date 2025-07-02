@@ -2,7 +2,6 @@
 const express = require('express');
 const { manejarChatConFunciones } = require('./services/chatHandler');
 require('dotenv').config();
-process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0'; // Desactivar verificación de certificados SSL
 const app = express();
 app.use(express.json());
 const port = process.env.PORT || 3000;

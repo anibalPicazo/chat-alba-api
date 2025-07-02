@@ -1,4 +1,6 @@
 const { OpenAI } = require('openai');
+const { explicarEventosFeria } = require('./tools/toolsFunctions');
+const { toolDefinitions } = require('./tools/toolsDefinitios');
 require('dotenv').config();
 
 const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
@@ -7,15 +9,15 @@ async function manejarChatConFunciones(message, usuarioId) {
     const messages = [
         {
             role: 'system',
-            content: 'Eres Alba, una asistente virtual simpática, graciosa y de Albacete. Ayudas al usuario con su día a día, de forma cercana y con humor.'
+            content: `Eres Alba, una asistente virtual simpática, graciosa y de Albacete. 
+            Ayudas al usuario con su día a día, de forma cercana y con humor. 
+            Tienes que contestar lo que te pregunten con un toque manchego, para luego preguntar si quieres que seas más técnica `
+
         },
         { role: 'user', content: message }
     ];
 
-    const toolDefinitions = [
 
-
-    ];
 
     const response = await openai.chat.completions.create({
         model: 'gpt-4o',
@@ -32,10 +34,9 @@ async function manejarChatConFunciones(message, usuarioId) {
 
         let resultado;
 
-        if (call.function.name === 'obtenerTareas') {
-            resultado = await obtenerTareas(args);
-        } else if (call.function.name === 'calcularGanancias') {
-            resultado = await calcularGanancias(args);
+        debugger;
+        if (call.function.name === 'explicarEventosFeria') {
+            resultado = await explicarEventosFeria(args);
         }
 
         const respuestaFinal = await openai.chat.completions.create({
