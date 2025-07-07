@@ -1,4 +1,6 @@
-export async function explicarEventosFeria({ dia }) {
+const { obtenerEventos } = require('../../controllers/events');
+
+function explicarEventosFeria({ dia }) {
     const eventos = {
         '7 de septiembre': '¡Arrancamos la feria con el tradicional desfile de carrozas manchegas y la apertura del recinto ferial! No te pierdas la batalla de miguelitos ni el pregón con chascarrillos de la tierra.',
         '8 de septiembre': 'Día de la Virgen de Los Llanos: procesión, fuegos artificiales y concurso de lanzamiento de peineta. Por la noche, verbena con orquesta y mucho buen rollo.',
@@ -11,3 +13,13 @@ export async function explicarEventosFeria({ dia }) {
     };
     return eventos[dia] || 'Ese día no hay eventos programados, ¡pero seguro que encuentras buen ambiente y algo rico para picar!';
 }
+
+async function consultarEventos() {
+    const eventos = await obtenerEventos();
+    if (!eventos || eventos.length === 0) {
+        return 'No hay eventos registrados.';
+    }
+    return eventos.map(e => `• ${e.titulo} (${e.fecha?.toLocaleDateString?.() || ''}): ${e.descripcion || ''}`).join('\n');
+}
+
+module.exports = { explicarEventosFeria, consultarEventos };

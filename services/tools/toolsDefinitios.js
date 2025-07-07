@@ -1,4 +1,16 @@
-export const toolDefinitions = [
+const toolDefinitions = [
+    {
+        type: 'function',
+        function: {
+            name: 'consultarEventos',
+            description: 'Obtiene la lista de eventos almacenados en la base de datos de la Feria de Albacete.',
+            parameters: {
+                type: 'object',
+                properties: {},
+                required: []
+            }
+        }
+    },
     {
         type: 'function',
         function: {
@@ -17,3 +29,5 @@ export const toolDefinitions = [
         }
     }
 ];
+
+module.exports = { toolDefinitions };

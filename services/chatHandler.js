@@ -1,6 +1,7 @@
 const { OpenAI } = require('openai');
-const { explicarEventosFeria } = require('./tools/toolsFunctions');
+const { explicarEventosFeria, consultarEventos } = require('./tools/toolsFunctions');
 const { toolDefinitions } = require('./tools/toolsDefinitios');
+const { getEvents } = require('../controllers/events');
 require('dotenv').config();
 
 const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
@@ -34,9 +35,15 @@ async function manejarChatConFunciones(message, usuarioId) {
 
         let resultado;
 
-        debugger;
+
         if (call.function.name === 'explicarEventosFeria') {
             resultado = await explicarEventosFeria(args);
+        }
+        if (call.function.name === 'consultarEventos') {
+            // Aquí podrías implementar la lógica para consultar eventos de la base de datos
+            // Por ejemplo, si tienes una función que obtiene eventos:
+            const eventos = await consultarEventos(); // Esta función debe estar definida en tu código
+            resultado = Array.isArray(eventos) ? JSON.stringify(eventos) : String(eventos);
         }
 
         const respuestaFinal = await openai.chat.completions.create({

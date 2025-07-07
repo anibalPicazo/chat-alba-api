@@ -2,6 +2,11 @@
 const express = require('express');
 const { manejarChatConFunciones } = require('./services/chatHandler');
 require('dotenv').config();
+const { dbConnection } = require('./database/config')
+const mongoose = require('mongoose');
+
+dbConnection()
+
 const app = express();
 app.use(express.json());
 const port = process.env.PORT || 3000;
@@ -23,6 +28,7 @@ app.post('/chat', async (req, res) => {
         res.status(500).json({ error: 'Error generando respuesta' });
     }
 });
+app.use('/api/events', require('./routes/events'))
 
 app.listen(port, () => {
     console.log(`🚀 Alba está escuchando en http://localhost:${port}`);
