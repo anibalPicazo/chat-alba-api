@@ -42,6 +42,7 @@ const createEvents = async (req, res = response) => {
     }
 
 }
+
 module.exports = {
     getEvents,
     createEvents,

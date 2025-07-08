@@ -30,6 +30,8 @@ app.post('/chat', async (req, res) => {
 });
 app.use('/api/events', require('./routes/events'))
 
+app.use('/api/agenda', require('./routes/agenda'))
+
 app.listen(port, () => {
     console.log(`🚀 Alba está escuchando en http://localhost:${port}`);
 });

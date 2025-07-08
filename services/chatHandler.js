@@ -1,5 +1,5 @@
 const { OpenAI } = require('openai');
-const { explicarEventosFeria, consultarEventos } = require('./tools/toolsFunctions');
+const { explicarEventosFeria, consultarEventos, crearEvento, consultarAgenda } = require('./tools/toolsFunctions');
 const { toolDefinitions } = require('./tools/toolsDefinitios');
 const { getEvents } = require('../controllers/events');
 require('dotenv').config();
@@ -39,9 +39,14 @@ async function manejarChatConFunciones(message, usuarioId) {
         if (call.function.name === 'explicarEventosFeria') {
             resultado = await explicarEventosFeria(args);
         }
+        if (call.function.name === 'crearEvento') {
+            resultado = await crearEvento(args);
+        }
+        if (call.function.name === 'consultarAgenda') {
+            resultado = await consultarAgenda(args);
+        }
         if (call.function.name === 'consultarEventos') {
-            // Aquí podrías implementar la lógica para consultar eventos de la base de datos
-            // Por ejemplo, si tienes una función que obtiene eventos:
+
             const eventos = await consultarEventos(); // Esta función debe estar definida en tu código
             resultado = Array.isArray(eventos) ? JSON.stringify(eventos) : String(eventos);
         }

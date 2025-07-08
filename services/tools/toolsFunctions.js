@@ -1,4 +1,6 @@
+const { consultarAgendaService } = require('../../controllers/agenda');
 const { obtenerEventos } = require('../../controllers/events');
+const Agenda = require('../../models/Agenda');
 
 function explicarEventosFeria({ dia }) {
     const eventos = {
@@ -22,4 +24,22 @@ async function consultarEventos() {
     return eventos.map(e => `• ${e.titulo} (${e.fecha?.toLocaleDateString?.() || ''}): ${e.descripcion || ''}`).join('\n');
 }
 
-module.exports = { explicarEventosFeria, consultarEventos };
+
+
+async function crearEvento({ idUsuario, descripcion, fecha }) {
+    const evento = new Agenda({ idUsuario, descripcion, fecha });
+    await evento.save();
+    return `Evento "${descripcion}" creado para el ${fecha} }.`;
+}
+async function consultarAgenda({ idUsuario }) {
+    const eventos = await consultarAgendaService(idUsuario);
+    if (!eventos || eventos.length === 0) {
+        return 'No hay eventos registrados.';
+    }
+    return eventos.map(e => `• ${e.titulo} (${e.fecha?.toLocaleDateString?.() || ''}): ${e.descripcion || ''}`).join('\n');
+}
+
+module.exports = { explicarEventosFeria, consultarEventos, crearEvento, consultarAgenda };
+
+
+
