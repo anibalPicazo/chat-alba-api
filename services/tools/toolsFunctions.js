@@ -31,8 +31,9 @@ async function crearEvento({ idUsuario, descripcion, fecha }) {
     await evento.save();
     return `Evento "${descripcion}" creado para el ${fecha} }.`;
 }
-async function consultarAgenda({ idUsuario }) {
-    const eventos = await consultarAgendaService(idUsuario);
+async function consultarAgenda({ usuarioId }) {
+    console.log('Consultando agenda para el usuario:', { usuarioId });
+    const eventos = await consultarAgendaService(usuarioId);
     if (!eventos || eventos.length === 0) {
         return 'No hay eventos registrados.';
     }

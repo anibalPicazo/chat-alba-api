@@ -15,6 +15,7 @@ const port = process.env.PORT || 3000;
 
 app.post('/chat', async (req, res) => {
     const { message, usuarioId } = req.body;
+    console.log('Hola')
 
     if (!message || !usuarioId) {
         return res.status(400).json({ error: 'Faltan datos' });

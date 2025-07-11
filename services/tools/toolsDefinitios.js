@@ -51,10 +51,8 @@ const toolDefinitions = [
             description: 'Consulta los eventos de la agenda de un usuario.',
             parameters: {
                 type: 'object',
-                properties: {
-                    idUsuario: { type: 'string', description: 'id del usuario' }
-                },
-                required: ['idUsuario']
+                properties: {},
+                required: []
             }
         }
     }
