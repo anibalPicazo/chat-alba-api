@@ -36,11 +36,10 @@ const toolDefinitions = [
             parameters: {
                 type: 'object',
                 properties: {
-                    idUsuario: { type: 'string', description: 'id del usuario' },
                     descripcion: { type: 'string', description: 'Título o descricpición del evento' },
                     fecha: { type: 'string', description: 'Fecha del evento (YYYY-MM-DD)' },
                 },
-                required: ['idUsuario', 'descripcion', 'fecha']
+                required: ['descripcion', 'fecha']
             }
         }
     },

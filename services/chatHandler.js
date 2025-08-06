@@ -6,15 +6,14 @@ const {
     consultarAgenda
 } = require('./tools/toolsFunctions');
 const { toolDefinitions } = require('./tools/toolsDefinitios');
+const { getOpenAIConfig } = require('../helpers/getOpenAIConfig');
 require('dotenv').config();
 
 const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
-// Memoria en memoria por usuario
 const sesiones = {};
 
 async function manejarChatConFunciones(message, usuarioId) {
-    // Si no existe una sesión, se inicia con el system prompt
     if (!sesiones[usuarioId]) {
         sesiones[usuarioId] = [
             {
@@ -26,19 +25,14 @@ async function manejarChatConFunciones(message, usuarioId) {
         ];
     }
     console.log('Sesión actual:', sesiones[usuarioId]);
-    // Agregar mensaje del usuario al historial
     sesiones[usuarioId].push({ role: 'user', content: message });
 
-    const response = await openai.chat.completions.create({
-        model: 'gpt-4o',
-        messages: sesiones[usuarioId],
-        tools: toolDefinitions,
-        tool_choice: 'auto'
-    });
+    const response = await openai.chat.completions.create(
+        getOpenAIConfig(sesiones[usuarioId], toolDefinitions)
+    );
 
     const choice = response.choices[0];
 
-    // Si el modelo decide llamar a una función
     if (choice.finish_reason === 'tool_calls') {
         const call = choice.message.tool_calls[0];
         const args = JSON.parse(call.function.arguments);
@@ -50,6 +44,7 @@ async function manejarChatConFunciones(message, usuarioId) {
             resultado = await explicarEventosFeria(args);
         }
         if (call.function.name === 'crearEvento') {
+            console.log('Llamando a crearEvento con args:', args);
             resultado = await crearEvento(args);
         }
         if (call.function.name === 'consultarAgenda') {
@@ -60,22 +55,19 @@ async function manejarChatConFunciones(message, usuarioId) {
             resultado = Array.isArray(eventos) ? JSON.stringify(eventos) : String(eventos);
         }
 
-        // Añadir llamada a herramienta y respuesta al historial
         sesiones[usuarioId].push({ role: 'assistant', tool_calls: [call] });
         sesiones[usuarioId].push({ role: 'tool', tool_call_id: call.id, content: resultado });
 
-        // Segunda llamada a OpenAI para generar la respuesta final con la info devuelta por la función
-        const respuestaFinal = await openai.chat.completions.create({
-            model: 'gpt-4o',
-            messages: sesiones[usuarioId]
-        });
+
+        const respuestaFinal = await openai.chat.completions.create(
+            getOpenAIConfig(sesiones[usuarioId], toolDefinitions)
+        );
 
         const finalMessage = respuestaFinal.choices[0].message;
         sesiones[usuarioId].push(finalMessage);
 
         return finalMessage.content;
     } else {
-        // Respuesta directa sin uso de herramientas
         sesiones[usuarioId].push(choice.message);
         return choice.message.content;
     }
