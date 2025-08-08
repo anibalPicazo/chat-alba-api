@@ -27,7 +27,6 @@ async function consultarEventos() {
 
 
 async function crearEvento({ usuarioId, descripcion, fecha }) {
-    console.log
     const evento = new Agenda({ idUsuario: usuarioId, descripcion, fecha });
     await evento.save();
     return `Evento "${descripcion}" creado para el ${fecha} }.`;
